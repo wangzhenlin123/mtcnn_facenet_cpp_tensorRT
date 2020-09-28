@@ -11,6 +11,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <time.h> //me_add
 
 #include <NvInfer.h>
 #include <NvUffParser.h>
@@ -41,6 +42,7 @@ class FaceNetClassifier
         void doInference(float* inputData, float* output);
         void forwardAddFace(cv::Mat image, std::vector<struct Bbox> outputBbox, const string className);
         void forward(cv::Mat image, std::vector<struct Bbox> outputBbox);
+        void saveFaceImgInVideo(std::string detect_name,std::string target_name,cv::Mat &image); //me_add
         void featureMatching(cv::Mat &image);
         void addNewFace(cv::Mat &image, std::vector<struct Bbox> outputBbox);
         void resetVariables();

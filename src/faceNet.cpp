@@ -205,6 +205,20 @@ void FaceNetClassifier::forward(cv::Mat frame, std::vector<struct Bbox> outputBb
     }
 }
 
+
+void FaceNetClassifier::saveFaceImgInVideo(std::string detect_name,std::string target_name,cv::Mat &image) {
+    std::time_t timep;
+
+    std::time(&timep); /*获取time_t类型当前时间*/
+    /*转换为常见的字符串：Fri Jan 11 17:04:08 2008*/
+    if(detect_name==target_name) {
+        //std::cout<<std::ctime(&timep)<<std::endl;
+        std::string now_time = std::ctime(&timep);
+        cv::imwrite("/home/wuchenxi/workspace/py_project/mtcnn_facenet_cpp_tensorRT/saved_imgs/"+now_time+"_"+detect_name+".jpg",
+                image);
+    }
+}
+
 void FaceNetClassifier::featureMatching(cv::Mat &image) {
 
     for(int i = 0; i < (m_embeddings.size()/128); i++) {
@@ -229,10 +243,15 @@ void FaceNetClassifier::featureMatching(cv::Mat &image) {
         if (minDistance <= m_knownPersonThresh) {
             cv::putText(image, m_knownFaces[winner].className, cv::Point(m_croppedFaces[i].y1+2, m_croppedFaces[i].x2-3),
                     cv::FONT_HERSHEY_DUPLEX, 0.1 + 2*fontScaler,  cv::Scalar(0,0,255,255), 1);
+            std::cout<<m_knownFaces[winner].className<<std::endl;
+
+
         }
         else if (minDistance > m_knownPersonThresh || winner == -1){
             cv::putText(image, "New Person", cv::Point(m_croppedFaces[i].y1+2, m_croppedFaces[i].x2-3),
                     cv::FONT_HERSHEY_DUPLEX, 0.1 + 2*fontScaler ,  cv::Scalar(0,0,255,255), 1);
+            std::cout<<"New Person"<<std::endl;
+            saveFaceImgInVideo("New Person","New Person",image);
         }
     }
 }
